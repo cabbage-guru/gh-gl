@@ -27,12 +27,26 @@ def create_private_repo(owner: str, repo: str) -> str:
     return get_repo_url(owner, repo)
 
 
+def _git_protocol() -> str:
+    """Return the git protocol configured in ``gh`` (ssh or https)."""
+    try:
+        proto = out(["gh", "config", "get", "git_protocol"], quiet=True).strip()
+        if proto in ("ssh", "https"):
+            return proto
+    except subprocess.CalledProcessError:
+        pass
+    return "ssh"
+
+
 def get_repo_url(owner: str, repo: str) -> str:
+    """Return the clone URL for a GitHub repo, respecting ``gh`` protocol config."""
+    proto = _git_protocol()
+    field = "sshUrl" if proto == "ssh" else "url"
     result = out([
         "gh", "repo", "view", f"{owner}/{repo}",
-        "--json", "sshUrl",
+        "--json", field,
     ], quiet=True)
-    return json.loads(result)["sshUrl"]
+    return json.loads(result)[field]
 
 
 def delete_repo(owner: str, repo: str) -> None:
