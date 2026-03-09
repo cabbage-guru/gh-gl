@@ -18,13 +18,13 @@ def repo_exists(owner: str, repo: str) -> bool:
 
 def create_private_repo(owner: str, repo: str) -> str:
     """Create a private repo and return its clone URL."""
-    result = out([
+    # gh repo create prints the URL to stdout; --json is not supported here
+    out([
         "gh", "repo", "create", f"{owner}/{repo}",
         "--private",
-        "--json", "sshUrl",
     ])
-    data = json.loads(result)
-    return data["sshUrl"]
+    # Fetch the SSH URL from the newly created repo
+    return get_repo_url(owner, repo)
 
 
 def get_repo_url(owner: str, repo: str) -> str:
