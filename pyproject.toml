@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "gh-gl"
+version = "0.1.0"
+description = "Sync repositories between GitLab (authoritative) and GitHub (disposable workspace)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "tomli>=2.0; python_version < '3.11'",
+    "tomli_w>=1.0",
+]
+
+[project.scripts]
+gh-gl = "gh_gl.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
